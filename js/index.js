@@ -1,36 +1,24 @@
-var oLi = $("li");   //类数组，要变成数组
-oLi = Array.prototype.slice.call(oLi);
-oLi.forEach(function(ele,index) {
-    $(ele).bind({
-        'mouseenter' : function(e){      
-            addClass(this,e,"in");
-        },
-        'mouseleave' : function(e){
-            addClass(this,e,"out");
-        }
-    });
+$(function() {
+	$(document).on('mousemove', function(e) {
+		var event = e || window.event;
+		//console.log(event);
+		function getDis(item) {
+			var item = $(item);
+			var x = item.offset().left + 64 / 2;
+			var y = item.offset().top + 64 / 2;
+			var a = Math.abs(event.clientX - x);
+			var b = Math.abs(event.clientY - y);
+			return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+		}
+
+		for (var i = 0; i < $('img').length; i++) {
+            var d = getDis($('img')[i]);
+            d = Math.min(d, 200);
+            var num = (200 - d) / 200 * 64 + 64;
+            $($('img')[i]).css({
+                'height':num+'px',
+                'width':num+'px'
+            })
+		}
+	});
 });
-
-
-function addClass(ele,e,status){
-    var x = e.offsetX - ele.offsetWidth/2;
-    var y = e.offsetY - ele.offsetHeight/2;
-    var d = (Math.round((Math.atan2(y,x)*(180/Math.PI)+180)/90)+3)%4;
-    var direction;
-    switch(d){
-        case 0:
-            direction = "top";
-            break;
-        case 1:
-            direction = "right";
-            break;
-        case 2:
-            direction = "bottom";
-            break;
-        case 3:
-            direction = "left";
-            break;
-    }
-    var className = status + "-" + direction;
-    ele.className = className;
-}
